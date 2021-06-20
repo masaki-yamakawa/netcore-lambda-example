@@ -11,6 +11,8 @@ provider:
   apiName: ${self:service}-${self:provider.stage}
   profile: default
   endpointType: regional
+  memorySize: 256
+  timeout: 25
   iam:
     role: ${file(./env/${self:provider.stage}.json):LAMBDA_EXEC_ROLE_ARN}
   vpc:
