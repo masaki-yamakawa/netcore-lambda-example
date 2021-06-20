@@ -43,7 +43,7 @@ package:
 
 functions:
   usersGet:
-    handler: UsersFunction::UsersFunction.Functions::GetUsers
+    handler: UsersFunction::UsersFunction.GetUsersFunctions::GetUsers
     package:
       artifact: UsersFunction/src/UsersFunction/bin/Release/netcoreapp3.1/UsersFunction.zip
     events:

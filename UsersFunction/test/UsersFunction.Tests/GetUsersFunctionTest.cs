@@ -20,7 +20,7 @@ namespace UsersFunction.Tests
             APIGatewayProxyRequest request;
             APIGatewayProxyResponse response;
 
-            Functions functions = new Functions();
+            GetUsersFunctions functions = new GetUsersFunctions();
 
             request = new APIGatewayProxyRequest();
             context = new TestLambdaContext();
@@ -58,7 +58,7 @@ namespace UsersFunction.Tests
         [Fact]
         public void TestGetUsersDB()
         {
-            Functions functions = new Functions();
+            GetUsersFunctions functions = new GetUsersFunctions();
 
             DataTable table = functions.GetUsersDB();
             Assert.Equal(3, table.Rows.Count);

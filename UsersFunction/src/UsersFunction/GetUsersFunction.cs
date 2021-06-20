@@ -12,14 +12,14 @@ using Newtonsoft.Json;
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 namespace UsersFunction
 {
-    public class Functions
+    public class GetUsersFunctions
     {
         private static readonly string ConnString = Environment.GetEnvironmentVariable("DB_CONN_STR");
 
         /// <summary>
         /// Default constructor that Lambda will invoke.
         /// </summary>
-        public Functions()
+        public GetUsersFunctions()
         {
         }
 
