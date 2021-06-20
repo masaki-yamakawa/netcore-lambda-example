@@ -42,11 +42,20 @@ package:
   individually: true
 
 functions:
-  usersGet:
+  getUsers:
     handler: UsersFunction::UsersFunction.GetUsersFunctions::GetUsers
     package:
       artifact: UsersFunction/src/UsersFunction/bin/Release/netcoreapp3.1/UsersFunction.zip
     events:
-      - httpApi:
+      - http:
           path: ${self:custom.endpoint}/users
+          method: get
+
+  getUsersByCond:
+    handler: UsersFunction::UsersFunction.GetUsersByCondFunctions::GetUsers
+    package:
+      artifact: UsersFunction/src/UsersFunction/bin/Release/netcoreapp3.1/UsersFunction.zip
+    events:
+      - http:
+          path: ${self:custom.endpoint}/users/{userId}
           method: get
