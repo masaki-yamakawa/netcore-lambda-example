@@ -12,14 +12,14 @@ using Newtonsoft.Json;
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 namespace UsersFunction
 {
-    public class Functions
+    public class GetUsersFunctions
     {
         private static readonly string ConnString = Environment.GetEnvironmentVariable("DB_CONN_STR");
 
         /// <summary>
         /// Default constructor that Lambda will invoke.
         /// </summary>
-        public Functions()
+        public GetUsersFunctions()
         {
         }
 
@@ -28,25 +28,12 @@ namespace UsersFunction
         /// </summary>
         /// <param name="request"></param>
         /// <returns>The API Gateway response.</returns>
-        public APIGatewayProxyResponse Get(APIGatewayProxyRequest request, ILambdaContext context)
+        public APIGatewayProxyResponse GetUsers(APIGatewayProxyRequest request, ILambdaContext context)
         {
-            context.Logger.LogLine("Execute UserFunction.Get");
-            string resultJson;
-            using (var conn = new MySqlConnection(ConnString))
-            {
-                conn.Open();
-                context.Logger.LogLine(String.Format("ConnectionString: {0}, State: {1}, DB ServerVersion: {2}", conn.ConnectionString, conn.State.ToString(), conn.ServerVersion));
+            context.Logger.LogLine("Execute UserFunction.GetUsers START");
 
-                DataTable table = new DataTable();
-                using(var command = conn.CreateCommand()) {
-                    command.CommandText = $"SELECT * FROM User";
-                    using(var reader = command.ExecuteReader()) {
-                        table.Load(reader);
-                    }
-                }
-                resultJson = JsonConvert.SerializeObject(table);
-            }
-
+            DataTable table = GetUsersDB();
+            string resultJson = JsonConvert.SerializeObject(table);
             var response = new APIGatewayProxyResponse
             {
                 StatusCode = (int) HttpStatusCode.OK,
@@ -54,7 +41,26 @@ namespace UsersFunction
                 Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
             };
 
+            context.Logger.LogLine("Execute UserFunction.GetUsers END");
             return response;
+        }
+
+        internal DataTable GetUsersDB()
+        {
+            DataTable table = new DataTable();
+            using (var conn = new MySqlConnection(ConnString))
+            {
+                conn.Open();
+                Console.WriteLine(String.Format("ConnectionString: {0}, State: {1}, DB ServerVersion: {2}", conn.ConnectionString, conn.State.ToString(), conn.ServerVersion));
+
+                using(var command = conn.CreateCommand()) {
+                    command.CommandText = $"SELECT * FROM User ORDER BY userId";
+                    using(var reader = command.ExecuteReader()) {
+                        table.Load(reader);
+                    }
+                }
+            }
+            return table;
         }
     }
 }
