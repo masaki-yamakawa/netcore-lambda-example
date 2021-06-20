@@ -8,18 +8,17 @@ using Amazon.Lambda.APIGatewayEvents;
 using MySqlConnector;
 using Newtonsoft.Json;
 
-// Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
-[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 namespace UsersFunction
 {
-    public class GetUsersFunction
+    public class GetUsersByCondFunction
     {
+        public const string USER_ID_QUERY_STRING_NAME = "userId";
         private static readonly string ConnString = Environment.GetEnvironmentVariable("DB_CONN_STR");
 
         /// <summary>
         /// Default constructor that Lambda will invoke.
         /// </summary>
-        public GetUsersFunction()
+        public GetUsersByCondFunction()
         {
         }
 
@@ -30,9 +29,21 @@ namespace UsersFunction
         /// <returns>The API Gateway response.</returns>
         public APIGatewayProxyResponse GetUsers(APIGatewayProxyRequest request, ILambdaContext context)
         {
-            context.Logger.LogLine("Execute GetUsersFunction.GetUsers START");
+            context.Logger.LogLine("Execute GetUsersByCondFunction.GetUsers START");
 
-            DataTable table = GetUsersDB();
+            string userId = null;
+            if (request.PathParameters != null && request.PathParameters.ContainsKey(USER_ID_QUERY_STRING_NAME))
+                userId = request.PathParameters[USER_ID_QUERY_STRING_NAME];
+            if (string.IsNullOrEmpty(userId))
+            {
+                return new APIGatewayProxyResponse
+                {
+                    StatusCode = (int) HttpStatusCode.BadRequest,
+                    Body = $"Missing required parameter {USER_ID_QUERY_STRING_NAME}"
+                };
+            }
+
+            DataTable table = GetUsersDBByCond(userId);
             string resultJson = JsonConvert.SerializeObject(table);
             var response = new APIGatewayProxyResponse
             {
@@ -41,11 +52,11 @@ namespace UsersFunction
                 Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
             };
 
-            context.Logger.LogLine("Execute GetUsersFunction.GetUsers END");
+            context.Logger.LogLine("Execute GetUsersByCondFunction.GetUsers END");
             return response;
         }
 
-        internal DataTable GetUsersDB()
+        internal DataTable GetUsersDBByCond(string userId)
         {
             DataTable table = new DataTable();
             using (var conn = new MySqlConnection(ConnString))
@@ -54,7 +65,7 @@ namespace UsersFunction
                 Console.WriteLine(String.Format("ConnectionString: {0}, State: {1}, DB ServerVersion: {2}", conn.ConnectionString, conn.State.ToString(), conn.ServerVersion));
 
                 using(var command = conn.CreateCommand()) {
-                    command.CommandText = $"SELECT * FROM User ORDER BY userId";
+                    command.CommandText = string.Format("SELECT * FROM User WHERE userId='{0}' ORDER BY userId", userId);
                     using(var reader = command.ExecuteReader()) {
                         table.Load(reader);
                     }

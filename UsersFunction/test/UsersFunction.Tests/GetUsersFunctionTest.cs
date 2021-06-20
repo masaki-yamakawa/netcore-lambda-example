@@ -7,10 +7,11 @@ using Xunit;
 
 namespace UsersFunction.Tests
 {
-    public class FunctionTest
+    public class GetUsersFunctionTest
     {
-        public FunctionTest()
+        public GetUsersFunctionTest()
         {
+            // TODO Init DataBase
         }
 
         [Fact]
@@ -20,11 +21,11 @@ namespace UsersFunction.Tests
             APIGatewayProxyRequest request;
             APIGatewayProxyResponse response;
 
-            GetUsersFunctions functions = new GetUsersFunctions();
+            GetUsersFunction function = new GetUsersFunction();
 
             request = new APIGatewayProxyRequest();
             context = new TestLambdaContext();
-            response = functions.GetUsers(request, context);
+            response = function.GetUsers(request, context);
             Assert.Equal(200, response.StatusCode);
 
             JArray jsonArray = JArray.Parse(response.Body);
@@ -58,9 +59,9 @@ namespace UsersFunction.Tests
         [Fact]
         public void TestGetUsersDB()
         {
-            GetUsersFunctions functions = new GetUsersFunctions();
+            GetUsersFunction function = new GetUsersFunction();
 
-            DataTable table = functions.GetUsersDB();
+            DataTable table = function.GetUsersDB();
             Assert.Equal(3, table.Rows.Count);
 
             DataRow row1 = table.Rows[0];
