@@ -1,0 +1,10 @@
+{
+  "ENVIRONMENT": "local",
+  "TIMEZONE": "Asia/Tokyo",
+  "LAMBDA_EXEC_ROLE_ARN": "arn:aws:iam::nnnnnnnnnnnnnn:role/service-role/xxxxxxxxxxx",
+  "VPC": {
+    "SUBNET_ID_1": "subnet-nnnnnnnnnnnnnn",
+    "SECURITY_GROUP_ID": "sg-nnnnnnnnnnnnnn"
+  },
+  "DB_CONN_STR": "Server=localhost;Database=netcore_lambda_example;User=lambda;Password=dalamb;"
+}
