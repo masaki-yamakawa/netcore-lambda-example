@@ -33,7 +33,7 @@ plugins:
   - serverless-deployment-bucket
   - serverless-dotenv-plugin
 custom:
-#  endpoint: api/v1
+  endpoint: api/v1
   deploymentBucket:
     versioning: true
     blockPublicAccess: true
@@ -42,11 +42,11 @@ package:
   individually: true
 
 functions:
-  users:
-    handler: UsersFunction::UsersFunction.Functions::Get
+  usersGet:
+    handler: UsersFunction::UsersFunction.Functions::GetUsers
     package:
       artifact: UsersFunction/src/UsersFunction/bin/Release/netcoreapp3.1/UsersFunction.zip
     events:
       - httpApi:
-          path: /users
+          path: ${self:custom.endpoint}/users
           method: get
