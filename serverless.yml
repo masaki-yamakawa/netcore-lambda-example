@@ -11,16 +11,17 @@ provider:
   apiName: ${self:service}-${self:provider.stage}
   profile: default
   endpointType: regional
-#  iam:
-#    role: ${file(./env/${self:provider.stage}.json):LAMBDA_EXEC_ROLE_ARN}
-#  vpc:
-#    securityGroupIds:
-#      - ${file(./env/${self:provider.stage}.json):VPC.SECURITY_GROUP_ID}
-#    subnetIds:
-#      - ${file(./env/${self:provider.stage}.json):VPC.SUBNET_ID_1}
+  iam:
+    role: ${file(./env/${self:provider.stage}.json):LAMBDA_EXEC_ROLE_ARN}
+  vpc:
+    subnetIds:
+      - ${file(./env/${self:provider.stage}.json):VPC.SUBNET_ID_1}
+    securityGroupIds:
+      - ${file(./env/${self:provider.stage}.json):VPC.SECURITY_GROUP_ID}
   environment:
     ENVIRONMENT: ${file(./env/${self:provider.stage}.json):ENVIRONMENT, 'Default'}
     TZ: ${file(./env/${self:provider.stage}.json):TIMEZONE}
+    DB_CONN_STR: ${file(./env/${self:provider.stage}.json):DB_CONN_STR}
 
   deploymentBucket:
       name: ${self:service}-${self:provider.stage}-deployment
