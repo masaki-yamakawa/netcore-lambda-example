@@ -40,7 +40,6 @@ namespace RolesFunction.Tests
 
             Functions functions = new Functions(this.DDBClient, this.TableName);
 
-
             // Add a new blog post
             Blog myBlog = new Blog();
             myBlog.Name = "The awesome post";
@@ -81,7 +80,6 @@ namespace RolesFunction.Tests
 			Assert.Single(blogPosts);
             Assert.Equal(myBlog.Name, blogPosts[0].Name);
             Assert.Equal(myBlog.Content, blogPosts[0].Content);
-
 
             // Delete the blog post
             request = new APIGatewayProxyRequest
@@ -172,7 +170,5 @@ namespace RolesFunction.Tests
             Dispose(true);
         }
         #endregion
-
-
     }
 }

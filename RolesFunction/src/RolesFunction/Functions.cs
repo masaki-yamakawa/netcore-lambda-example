@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -15,7 +14,6 @@ using Newtonsoft.Json;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
-
 namespace RolesFunction
 {
     public class Functions
@@ -74,7 +72,7 @@ namespace RolesFunction
 
             var response = new APIGatewayProxyResponse
             {
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 Body = JsonConvert.SerializeObject(page),
                 Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
             };
@@ -99,7 +97,7 @@ namespace RolesFunction
             {
                 return new APIGatewayProxyResponse
                 {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    StatusCode = (int) HttpStatusCode.BadRequest,
                     Body = $"Missing required parameter {ID_QUERY_STRING_NAME}"
                 };
             }
@@ -118,7 +116,7 @@ namespace RolesFunction
 
             var response = new APIGatewayProxyResponse
             {
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 Body = JsonConvert.SerializeObject(blog),
                 Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
             };
@@ -141,7 +139,7 @@ namespace RolesFunction
 
             var response = new APIGatewayProxyResponse
             {
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 Body = blog.Id.ToString(),
                 Headers = new Dictionary<string, string> { { "Content-Type", "text/plain" } }
             };
@@ -164,7 +162,7 @@ namespace RolesFunction
             {
                 return new APIGatewayProxyResponse
                 {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    StatusCode = (int) HttpStatusCode.BadRequest,
                     Body = $"Missing required parameter {ID_QUERY_STRING_NAME}"
                 };
             }
@@ -174,7 +172,7 @@ namespace RolesFunction
 
             return new APIGatewayProxyResponse
             {
-                StatusCode = (int)HttpStatusCode.OK
+                StatusCode = (int) HttpStatusCode.OK
             };
         }
     }
