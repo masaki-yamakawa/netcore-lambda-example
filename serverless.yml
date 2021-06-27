@@ -24,7 +24,7 @@ provider:
     ENVIRONMENT: ${file(./env/${self:provider.stage}.json):ENVIRONMENT, 'Default'}
     TZ: ${file(./env/${self:provider.stage}.json):TIMEZONE}
     DB_CONN_STR: ${file(./env/${self:provider.stage}.json):DB_CONN_STR}
-    DYNAMODB_BLOG_TABLE_NAME: ${file(./env/${self:provider.stage}.json):DYNAMODB.ROLE_TABLE_NAME}
+    DYNAMODB_ROLE_TABLE_NAME: ${file(./env/${self:provider.stage}.json):DYNAMODB.ROLE_TABLE_NAME}
 
   deploymentBucket:
       name: ${self:service}-${self:provider.stage}-deployment
