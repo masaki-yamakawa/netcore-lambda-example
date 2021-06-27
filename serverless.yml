@@ -33,11 +33,19 @@ provider:
 plugins:
   - serverless-deployment-bucket
   - serverless-dotenv-plugin
+  - serverless-dynamodb-local
 custom:
   endpoint: api/v1
   deploymentBucket:
     versioning: true
     blockPublicAccess: true
+  dynamodb:
+    stages:
+      - local
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
 
 package:
   individually: true

@@ -64,14 +64,13 @@ namespace RolesFunction
         public async Task<APIGatewayProxyResponse> GetRolesAsync(APIGatewayProxyRequest request, ILambdaContext context)
         {
             context.Logger.LogLine("Getting roles");
-            var search = this.DDBContext.ScanAsync<Role>(null);
-            var page = await search.GetNextSetAsync();
-            context.Logger.LogLine($"Found {page.Count} roles");
+            var roles = await this.DDBContext.ScanAsync<Role>(null).GetRemainingAsync();
+            context.Logger.LogLine($"Found {roles.Count} roles");
 
             var response = new APIGatewayProxyResponse
             {
                 StatusCode = (int) HttpStatusCode.OK,
-                Body = JsonConvert.SerializeObject(page),
+                Body = JsonConvert.SerializeObject(roles),
                 Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
             };
 
@@ -131,7 +130,7 @@ namespace RolesFunction
         {
             var role = JsonConvert.DeserializeObject<Role>(request?.Body);
             role.CreatedTimestamp = DateTime.Now;
-            role.UpdatedTimestamp = DateTime.Now;
+            role.UpdatedTimestamp = role.CreatedTimestamp;
 
             context.Logger.LogLine($"Saving role: Role name={role.Name}");
             await DDBContext.SaveAsync<Role>(role);
