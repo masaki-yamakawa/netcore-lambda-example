@@ -5,6 +5,7 @@
   "dependencies": {},
   "devDependencies": {
     "serverless-deployment-bucket": "^1.5.1",
-    "serverless-dotenv-plugin": "^3.9.0"
+    "serverless-dotenv-plugin": "^3.9.0",
+    "serverless-dynamodb-local": "^0.2.39"
   }
 }
