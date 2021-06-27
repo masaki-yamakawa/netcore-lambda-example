@@ -24,6 +24,7 @@ provider:
     ENVIRONMENT: ${file(./env/${self:provider.stage}.json):ENVIRONMENT, 'Default'}
     TZ: ${file(./env/${self:provider.stage}.json):TIMEZONE}
     DB_CONN_STR: ${file(./env/${self:provider.stage}.json):DB_CONN_STR}
+    DYNAMODB_ROLE_TABLE_NAME: ${file(./env/${self:provider.stage}.json):DYNAMODB.ROLE_TABLE_NAME}
 
   deploymentBucket:
       name: ${self:service}-${self:provider.stage}-deployment
@@ -43,7 +44,7 @@ package:
 
 functions:
   getUsers:
-    handler: UsersFunction::UsersFunction.GetUsersFunctions::GetUsers
+    handler: UsersFunction::UsersFunction.GetUsersFunction::GetUsers
     package:
       artifact: UsersFunction/src/UsersFunction/bin/Release/netcoreapp3.1/UsersFunction.zip
     events:
@@ -52,10 +53,66 @@ functions:
           method: get
 
   getUsersByCond:
-    handler: UsersFunction::UsersFunction.GetUsersByCondFunctions::GetUsers
+    handler: UsersFunction::UsersFunction.GetUsersByCondFunction::GetUsers
     package:
       artifact: UsersFunction/src/UsersFunction/bin/Release/netcoreapp3.1/UsersFunction.zip
     events:
       - http:
           path: ${self:custom.endpoint}/users/{userId}
           method: get
+
+  postRole:
+    handler: RolesFunction::RolesFunction.Functions::PostRoleAsync
+    package:
+      artifact: RolesFunction/src/RolesFunction/bin/Release/netcoreapp3.1/RolesFunction.zip
+    events:
+      - http:
+          path: ${self:custom.endpoint}/roles
+          method: post
+
+  getRoles:
+    handler: RolesFunction::RolesFunction.Functions::GetRolesAsync
+    package:
+      artifact: RolesFunction/src/RolesFunction/bin/Release/netcoreapp3.1/RolesFunction.zip
+    events:
+      - http:
+          path: ${self:custom.endpoint}/roles
+          method: get
+
+  getRolesByName:
+    handler: RolesFunction::RolesFunction.Functions::GetRolesByNameAsync
+    package:
+      artifact: RolesFunction/src/RolesFunction/bin/Release/netcoreapp3.1/RolesFunction.zip
+    events:
+      - http:
+          path: ${self:custom.endpoint}/roles/{roleName}
+          method: get
+
+  deleteRoleByName:
+    handler: RolesFunction::RolesFunction.Functions::DeleteRoleAsync
+    package:
+      artifact: RolesFunction/src/RolesFunction/bin/Release/netcoreapp3.1/RolesFunction.zip
+    events:
+      - http:
+          path: ${self:custom.endpoint}/roles/{roleName}
+          method: delete
+
+resources:
+  Resources:
+    DynamoDbRoleTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: Role
+        AttributeDefinitions:
+          - AttributeName: Name
+            AttributeType: S
+          - AttributeName: Type
+            AttributeType: N
+        KeySchema:
+          - AttributeName: Name
+            KeyType: HASH
+          - AttributeName: Type
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
