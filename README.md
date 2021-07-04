@@ -63,3 +63,4 @@ serverless.ymlが存在するディレクトリへ移動してでデプロイ
 cd ${rootDir}
 sls remove --stage ${stage} --profile ${profile}
 ```
+
