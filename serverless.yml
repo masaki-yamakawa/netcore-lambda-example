@@ -20,6 +20,15 @@ provider:
       - ${file(./env/${self:provider.stage}.json):VPC.SUBNET_ID_1}
     securityGroupIds:
       - ${file(./env/${self:provider.stage}.json):VPC.SECURITY_GROUP_ID}
+  resourcePolicy:
+    - Effect: Allow
+      Principal: "*"
+      Action: execute-api:Invoke
+      Resource:
+        - execute-api:/*/*/* 
+      Condition:
+        IpAddress:
+          aws:SourceIp: ${file(./env/${self:provider.stage}.json):WHITELIST}
   environment:
     ENVIRONMENT: ${file(./env/${self:provider.stage}.json):ENVIRONMENT, 'Default'}
     TZ: ${file(./env/${self:provider.stage}.json):TIMEZONE}
@@ -59,6 +68,8 @@ functions:
       - http:
           path: ${self:custom.endpoint}/users
           method: get
+#          cors:
+#            origin: '*'
 
   getUsersByCond:
     handler: UsersFunction::UsersFunction.GetUsersByCondFunction::GetUsers
@@ -116,6 +127,8 @@ resources:
             AttributeType: S
           - AttributeName: Type
             AttributeType: N
+          - AttributeName: CreatedTimestamp
+            AttributeType: S
         KeySchema:
           - AttributeName: Name
             KeyType: HASH
@@ -124,3 +137,15 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
+        GlobalSecondaryIndexes:
+          - IndexName: CreatedTimestampIndex
+            KeySchema:
+              - AttributeName: Type
+                KeyType: HASH
+              - AttributeName: CreatedTimestamp
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1

@@ -6,6 +6,7 @@
     "SUBNET_ID_1": "subnet-nnnnnnnnnnnnnn",
     "SECURITY_GROUP_ID": "sg-nnnnnnnnnnnnnn"
   },
+  "WHITELIST": ["127.0.0.1/32"],
   "DB_CONN_STR": "Server=localhost;Database=netcore_lambda_example;User=lambda;Password=dalamb;",
   "DYNAMODB": {
     "ROLE_TABLE_NAME": "Role"

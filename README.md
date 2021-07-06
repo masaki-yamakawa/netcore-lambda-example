@@ -11,19 +11,6 @@ Serverless Frameworkをグローバルインストール
 npm install -g serverless@2.50.0
 ```
 
-インストールで証明書エラーとなる場合は以下を設定して再実行
-```
-# Windows
-set NODE_TLS_REJECT_UNAUTHORIZED=0
-  or
-# Kinux
-export NODE_TLS_REJECT_UNAUTHORIZED=0
-
-npm config set strict-ssl false
-npm install -g serverless@2.50.0
-npm config set strict-ssl true
-```
-
 ## AWS Lambdaモジュールビルド
 
 全Functionをビルド
@@ -64,3 +51,16 @@ cd ${rootDir}
 sls remove --stage ${stage} --profile ${profile}
 ```
 
+
+>NOTE:slsコマンドで証明書エラーとなる場合は以下を設定して再実行
+```
+# Windows
+set NODE_TLS_REJECT_UNAUTHORIZED=0
+  or
+# Kinux
+export NODE_TLS_REJECT_UNAUTHORIZED=0
+
+npm config set strict-ssl false
+npm install -g serverless@2.50.0
+npm config set strict-ssl true
+```
